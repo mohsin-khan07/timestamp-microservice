@@ -17,12 +17,12 @@ app.get("/api/hello", function (req, res) {
 app.get("/api/:year-:month-:date", (req, res) => {
   const time = req.params.year + "-" + req.params.month + "-" + req.params.date;
   const date = new Date(time);
-  res.send(`{"unix":${date.getTime()},"utc":${date.toUTCString()}}`);
+  res.send({ unix: date.getTime(), utc: date.toUTCString() });
 });
 
 app.get("/api/:unix", (req, res) => {
   const date = new Date(Number(req.params.unix));
-  res.send(`{"unix":${date.getTime()},"utc":${date.toUTCString()}}`);
+  res.send({ unix: date.getTime(), utc: date.toUTCString() });
 });
 
 // Listen on port set in environment variable or default to 3000
