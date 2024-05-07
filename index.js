@@ -10,18 +10,22 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + "/views/index.html");
 });
 
-app.get("/api/hello", function (req, res) {
-  res.json({ greeting: "hello API" });
+const isInvalidDate = (date) => date.toUTCString() === "Invalid Date";
+
+app.get("/api", (req, res) => {
+  res.send({ unix: new Date().getTime(), utc: new Date().toUTCString() });
 });
 
-app.get("/api/:year-:month-:date", (req, res) => {
-  const time = req.params.year + "-" + req.params.month + "-" + req.params.date;
-  const date = new Date(time);
-  res.send({ unix: date.getTime(), utc: date.toUTCString() });
-});
+app.get("/api/:date?", (req, res) => {
+  let date = new Date(req.params.date);
 
-app.get("/api/:unix", (req, res) => {
-  const date = new Date(Number(req.params.unix));
+  if (isInvalidDate(date)) date = new Date(+req.params.date);
+
+  if (isInvalidDate(date)) {
+    res.send({ error: "Invalid Date" });
+    return;
+  }
+
   res.send({ unix: date.getTime(), utc: date.toUTCString() });
 });
 
